@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PlanetMongoDbMapper {
-    public static PlanetMongoDb map(Planet planet) {
+    public PlanetMongoDb map(Planet planet) {
         return new PlanetMongoDb(planet.getName(), planet.getClimate(), planet.getTerrain());
     }
 
-    public static Planet map(PlanetMongoDb planetMongoDb) {
+    public Planet map(PlanetMongoDb planetMongoDb) {
         int movies = 5; // TODO: Dependency injection of SWAPI service / caching layer to be called here
         return new Planet(planetMongoDb.getId().toString(), planetMongoDb.getName(), planetMongoDb.getClimate(), planetMongoDb.getTerrain(), movies);
     }

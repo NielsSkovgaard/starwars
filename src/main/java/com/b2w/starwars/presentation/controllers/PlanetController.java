@@ -18,12 +18,15 @@ public class PlanetController {
     @Autowired
     private PlanetService planetService;
 
+    @Autowired
+    private PlanetDtoMapper planetDtoMapper;
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlanetDto> findAll() {
         return planetService
                 .findAll()
                 .stream()
-                .map(PlanetDtoMapper::map) // TODO: Could be an instance that is auto-wired
+                .map(planetDtoMapper::map)
                 .collect(Collectors.toList());
     }
 }

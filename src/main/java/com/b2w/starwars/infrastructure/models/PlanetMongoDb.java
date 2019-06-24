@@ -10,7 +10,7 @@ public class PlanetMongoDb {
     @Id
     private ObjectId id;
 
-    @Indexed
+    @Indexed(unique = true)
     private String name;
 
     private String climate;

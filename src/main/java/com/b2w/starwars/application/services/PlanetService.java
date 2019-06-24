@@ -12,7 +12,23 @@ public class PlanetService {
     @Autowired
     private PlanetRepository planetRepository;
 
-    public List<Planet> findAll() {
-        return planetRepository.findAll();
+    public List<Planet> getAll() {
+        return planetRepository.getAll();
+    }
+
+    public Planet getById(String id) {
+        return planetRepository.getById(id);
+    }
+
+    public Planet getByName(String name) {
+        return planetRepository.getByName(name);
+    }
+
+    public Planet save(Planet planet) {
+        return planetRepository.save(planet);
+    }
+
+    public void delete(String id) {
+        planetRepository.delete(id);
     }
 }

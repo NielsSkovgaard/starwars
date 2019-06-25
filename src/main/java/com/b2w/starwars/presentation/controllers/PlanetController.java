@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,7 +29,7 @@ public class PlanetController {
     @Autowired
     private PlanetDtoMapper planetDtoMapper;
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<PlanetDto> getAll() {
         return planetService
                 .getAll()
@@ -39,7 +38,7 @@ public class PlanetController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/planets/id/{id}")
+    @GetMapping(path = "/id/{id}")
     public ResponseEntity<PlanetDto> getById(@PathVariable("id") String id) {
         Planet planet = planetService.getById(id);
         if (planet != null) {
@@ -48,7 +47,7 @@ public class PlanetController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping(path = "/planets/name/{name}")
+    @GetMapping(path = "/name/{name}")
     public ResponseEntity<PlanetDto> getByName(@PathVariable("name") String name) {
         Planet planet = planetService.getByName(name);
         if (planet != null) {
@@ -57,7 +56,7 @@ public class PlanetController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(path = "/planets")
+    @PostMapping
     public ResponseEntity<PlanetDto> save(@RequestBody PlanetDto planetDto) {
         try {
             PlanetDto planetDtoResult = planetDtoMapper.map(planetService.save(planetDtoMapper.map(planetDto)));
@@ -78,7 +77,7 @@ public class PlanetController {
         }
     }
 
-    @DeleteMapping(path = "/planets/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity delete(@PathVariable("id") String id) {
         try {
             planetService.delete(id);

@@ -1,9 +1,9 @@
-package com.b2w.starwars.domain.models;
+package com.b2w.starwars.application.models;
 
 import java.util.List;
 
 public class PlanetSwapiSearchResult {
-    private long count;
+    private int count;
     private String next;
     private String previous;
     private List<PlanetSwapi> results;
@@ -11,18 +11,18 @@ public class PlanetSwapiSearchResult {
     public PlanetSwapiSearchResult() {
     }
 
-    public PlanetSwapiSearchResult(long count, String next, String previous, List<PlanetSwapi> results) {
+    public PlanetSwapiSearchResult(int count, String next, String previous, List<PlanetSwapi> results) {
         this.count = count;
         this.next = next;
         this.previous = previous;
         this.results = results;
     }
 
-    public long getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(int count) {
         this.count = count;
     }
 

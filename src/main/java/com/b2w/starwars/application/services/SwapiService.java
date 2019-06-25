@@ -70,9 +70,11 @@ public class SwapiService {
             return responseEntity.getBody();
         }
 
-        // TODO: For a more robust solution and depending on how stable the SWAPI REST service is in the future, consider applying the Retry design pattern.
-        // See: https://www.baeldung.com/spring-retry
-        // For now, building of the SWAPI cache on application start takes around 5 seconds and is running stable, which doesn't indicate the need for further engineering at the moment.
+        // At the moment, the SWAPI REST service appears stable and fast. In other words, connecting with the service
+        // didn't result in server errors, connection timeouts, etc., and it takes < 5 seconds to build the cache of
+        // movies per planet on application start.
+        // Otherwise, one could consider applying the Retry design pattern (https://www.baeldung.com/spring-retry) for
+        // a more robust solution. However, at this point it doesn't seem important.
         throw new ResponseStatusException(statusCode);
     }
 }

@@ -1,4 +1,4 @@
-package com.b2w.starwars.domain.models;
+package com.b2w.starwars.application.models;
 
 import java.util.List;
 

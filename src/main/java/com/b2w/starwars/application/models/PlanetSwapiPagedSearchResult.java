@@ -2,16 +2,16 @@ package com.b2w.starwars.application.models;
 
 import java.util.List;
 
-public class PlanetSwapiSearchResult {
+public class PlanetSwapiPagedSearchResult {
     private int count;
     private String next;
     private String previous;
     private List<PlanetSwapi> results;
 
-    public PlanetSwapiSearchResult() {
+    public PlanetSwapiPagedSearchResult() {
     }
 
-    public PlanetSwapiSearchResult(int count, String next, String previous, List<PlanetSwapi> results) {
+    public PlanetSwapiPagedSearchResult(int count, String next, String previous, List<PlanetSwapi> results) {
         this.count = count;
         this.next = next;
         this.previous = previous;

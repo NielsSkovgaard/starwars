@@ -1,17 +1,21 @@
 package com.b2w.starwars.application.services;
 
-import com.b2w.starwars.domain.models.PlanetSwapi;
-import com.b2w.starwars.domain.models.PlanetSwapiSearchResult;
+import com.b2w.starwars.application.models.PlanetSwapi;
+import com.b2w.starwars.application.models.PlanetSwapiPagedSearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * Builds and holds a HashMap with the number of movies for each planet.
+ */
 @Service
 public class SwapiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwapiService.class);
@@ -22,48 +26,53 @@ public class SwapiService {
     @Value("${services.config.useragent}")
     private String userAgent;
 
-    // TODO: On post of movie, update cache with number of movies.
+    private HashMap<String, Integer> planetMovies = new HashMap<>();
 
-    /*
-     * Gets a HashMap with the number of movies for each planet.
-     */
-    public HashMap<String, Integer> getPlanetMovies() {
-        HashMap<String, Integer> planetNameAndMovies = new HashMap<>();
-        String url = swapiUrl;
-
-        do {
-            PlanetSwapiSearchResult result = getSwapiPlanetResult(url);
-            if (result != null && result.getResults() != null) {
-                for (PlanetSwapi planet : result.getResults()) {
-                    planetNameAndMovies.put(planet.getName(), planet.getFilms().size());
-                }
-                url = result.getNext();
-            }
-        } while (url != null && url.length() > 0);
-
-        return planetNameAndMovies;
+    public int getMovies(String planetName) {
+        Integer movies = planetMovies.get(planetName.toLowerCase());
+        return movies == null ? 0 : movies;
     }
 
-    private PlanetSwapiSearchResult getSwapiPlanetResult(String apiUrl) {
+    public void buildPlanetMovies(RestTemplate restTemplate) {
+        LOGGER.info("Starting building SWAPI cache.");
+
+        HttpEntity<PlanetSwapiPagedSearchResult> httpEntity = buildHttpEntity();
+        String searchUrl = swapiUrl;
+
+        do {
+            PlanetSwapiPagedSearchResult result = fetchData(restTemplate, httpEntity, searchUrl);
+            if (result != null && result.getResults() != null) {
+                for (PlanetSwapi planet : result.getResults()) {
+                    planetMovies.put(planet.getName().toLowerCase(), planet.getFilms().size());
+                }
+                searchUrl = result.getNext();
+            }
+        } while (searchUrl != null && searchUrl.length() > 0);
+
+        LOGGER.info("Finished building SWAPI cache.");
+    }
+
+    private HttpEntity<PlanetSwapiPagedSearchResult> buildHttpEntity() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add(HttpHeaders.USER_AGENT, userAgent);
+        return new HttpEntity<>(httpHeaders);
+    }
 
-        HttpEntity<PlanetSwapiSearchResult> httpEntity = new HttpEntity<>(httpHeaders);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<PlanetSwapiSearchResult> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, httpEntity, PlanetSwapiSearchResult.class);
+    private PlanetSwapiPagedSearchResult fetchData(RestTemplate restTemplate, HttpEntity<PlanetSwapiPagedSearchResult> httpEntity, String apiUrl) {
+        ResponseEntity<PlanetSwapiPagedSearchResult> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, httpEntity, PlanetSwapiPagedSearchResult.class);
         HttpStatus statusCode = responseEntity.getStatusCode();
 
         LOGGER.debug("Response Status Code: {}.", statusCode);
 
         if (statusCode == HttpStatus.OK) {
-            PlanetSwapiSearchResult result = responseEntity.getBody();
-            if (result != null) {
-                return result;
-            }
+            return responseEntity.getBody();
         }
 
-        return null;
+        // TODO: For a more robust solution and depending on how stable the SWAPI REST service is in the future, consider applying the Retry design pattern.
+        // See: https://www.baeldung.com/spring-retry
+        // For now, building of the SWAPI cache on application start takes around 5 seconds and is running stable, which doesn't indicate the need for further engineering at the moment.
+        throw new ResponseStatusException(statusCode);
     }
 }

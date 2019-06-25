@@ -12,10 +12,16 @@ public class PlanetMongoDbMapper {
     private SwapiService swapiService;
 
     public PlanetMongoDb map(Planet planet) {
+        if (planet == null) {
+            return null;
+        }
         return new PlanetMongoDb(planet.getName(), planet.getClimate(), planet.getTerrain());
     }
 
     public Planet map(PlanetMongoDb planetMongoDb) {
+        if (planetMongoDb == null) {
+            return null;
+        }
         int movies = swapiService.getMovies(planetMongoDb.getName());
         return new Planet(planetMongoDb.getId().toString(), planetMongoDb.getName(), planetMongoDb.getClimate(), planetMongoDb.getTerrain(), movies);
     }

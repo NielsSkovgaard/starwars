@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * Builds and holds a HashMap with the number of movies for each planet.
+ * Builds and holds a HashMap cache with the number of movies for each planet.
  */
 @Service
 public class SwapiService {
@@ -64,8 +64,6 @@ public class SwapiService {
         ResponseEntity<PlanetSwapiPagedSearchResult> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, httpEntity, PlanetSwapiPagedSearchResult.class);
         HttpStatus statusCode = responseEntity.getStatusCode();
 
-        LOGGER.debug("Response Status Code: {}.", statusCode);
-
         if (statusCode == HttpStatus.OK) {
             return responseEntity.getBody();
         }
@@ -75,6 +73,7 @@ public class SwapiService {
         // movies per planet on application start.
         // Otherwise, one could consider applying the Retry design pattern (https://www.baeldung.com/spring-retry) for
         // a more robust solution. However, at this point it doesn't seem important.
+        LOGGER.error("SwapiService - response status code: {}.", statusCode);
         throw new ResponseStatusException(statusCode);
     }
 }

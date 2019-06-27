@@ -30,12 +30,13 @@ public class PlanetController {
     private PlanetDtoMapper planetDtoMapper;
 
     @GetMapping
-    public List<PlanetDto> getAll() {
-        return planetService
+    public ResponseEntity<List<PlanetDto>> getAll() {
+        List<PlanetDto> result = planetService
                 .getAll()
                 .stream()
                 .map(planetDtoMapper::map)
                 .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping(path = "/id/{id}")
@@ -60,13 +61,11 @@ public class PlanetController {
     public ResponseEntity<PlanetDto> save(@RequestBody PlanetDto planetDto) {
         try {
             PlanetDto planetDtoResult = planetDtoMapper.map(planetService.save(planetDtoMapper.map(planetDto)));
-
             URI planetUrl = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/id/{id}")
                     .buildAndExpand(planetDtoResult.getId())
                     .toUri();
-
             return ResponseEntity.created(planetUrl).build();
         } catch (ValidationException e) {
             LOGGER.error("ValidationException on save.", e);

@@ -4,6 +4,7 @@ import com.b2w.starwars.application.models.PlanetSwapi;
 import com.b2w.starwars.application.models.PlanetSwapiPagedSearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,22 +21,34 @@ import java.util.HashMap;
 public class SwapiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwapiService.class);
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Value("${services.swapi.url}")
     private String swapiUrl;
 
     @Value("${services.config.useragent}")
     private String userAgent;
 
-    private HashMap<String, Integer> planetMovies = new HashMap<>();
+    private HashMap<String, Integer> planetMovies;
 
     public int getMovies(String planetName) {
-        Integer movies = planetMovies.get(planetName.toLowerCase());
-        return movies == null ? 0 : movies;
+        if (planetName != null) {
+            if (planetMovies == null) {
+                planetMovies = buildPlanetMovies();
+            }
+            Integer movies = planetMovies.get(planetName.toLowerCase());
+            if (movies != null) {
+                return movies;
+            }
+        }
+        return 0;
     }
 
-    public void buildPlanetMovies(RestTemplate restTemplate) {
+    private HashMap<String, Integer> buildPlanetMovies() {
         LOGGER.info("Starting building SWAPI cache.");
 
+        HashMap<String, Integer> hashMap = new HashMap<>();
         HttpEntity<PlanetSwapiPagedSearchResult> httpEntity = buildHttpEntity();
         String searchUrl = swapiUrl;
 
@@ -43,13 +56,14 @@ public class SwapiService {
             PlanetSwapiPagedSearchResult result = fetchData(restTemplate, httpEntity, searchUrl);
             if (result != null && result.getResults() != null) {
                 for (PlanetSwapi planet : result.getResults()) {
-                    planetMovies.put(planet.getName().toLowerCase(), planet.getFilms().size());
+                    hashMap.put(planet.getName().toLowerCase(), planet.getFilms().size());
                 }
                 searchUrl = result.getNext();
             }
         } while (searchUrl != null && searchUrl.length() > 0);
 
         LOGGER.info("Finished building SWAPI cache.");
+        return hashMap;
     }
 
     private HttpEntity<PlanetSwapiPagedSearchResult> buildHttpEntity() {

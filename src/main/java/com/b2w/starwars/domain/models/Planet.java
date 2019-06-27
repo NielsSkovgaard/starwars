@@ -1,5 +1,7 @@
 package com.b2w.starwars.domain.models;
 
+import java.util.Objects;
+
 public class Planet {
     private String id;
     private String name;
@@ -56,5 +58,22 @@ public class Planet {
 
     public void setMovies(int movies) {
         this.movies = movies;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Planet planet = (Planet) o;
+        return movies == planet.movies &&
+                Objects.equals(id, planet.id) &&
+                Objects.equals(name, planet.name) &&
+                Objects.equals(climate, planet.climate) &&
+                Objects.equals(terrain, planet.terrain);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, climate, terrain, movies);
     }
 }

@@ -52,7 +52,6 @@ public class PlanetMongoDbRepository implements PlanetRepository {
     @Override
     public void delete(String id) {
         DeleteResult deleteResult = mongoTemplate.remove(Query.query(Criteria.where("_id").is(id)), collectionName);
-
         if (!deleteResult.wasAcknowledged()) {
             throw new EmptyResultDataAccessException(1);
         }

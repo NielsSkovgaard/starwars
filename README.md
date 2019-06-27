@@ -106,6 +106,8 @@ GET http://localhost:8080/planets/id/5d1188e543d0433b7cef006d
 </pre>
 
 **Get single planet by name**
+
+The search is case-sensitive and needs to match exactly (i.e. no partial matches).
 <pre>
 <b><u>Request</u></b>
 GET http://localhost:8080/planets/name/Some unknown planet

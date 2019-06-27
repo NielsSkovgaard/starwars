@@ -1,44 +1,38 @@
-Star Wars REST API
-=
+#Star Wars REST API
+##About
+The application allows its users to maintain a collection of planets in the Star Wars universe through a REST API.
 
-About
--
+It will run on: <http://localhost:8080/planets>.
 
-This solution builds a REST API to maintain a collection of planets in the Star Wars universe.
-
-After running the solution, go to: http://localhost:8080/planets.
-
-It has the following operations:
+**Available operations** (also see [Operations](#operations]))
 - Add new planet
 - List all planets
 - Get single planet by ID
 - Get single planet by name
 - Delete planet by ID
 
-The planet domain model is:
+**Planet data model**
 - ID (String/ObjectID)
 - Name (String)
 - Climate (String)
 - Terrain (String)
 - Movies (int)
-    - This is the number of Star Wars movies the planet is in, which is looked up through an external integration with the Star Wars API (SWAPI) (https://swapi.co/api/planets/).
+  - The number of Star Wars movies the planet is in.
+  - This external information comes from the Star Wars API (SWAPI) (<https://swapi.co/api/planets/>).
 
-Technologies
--
+##Technologies
 - Java JDK 8
 - Spring
 - Maven
 - JUnit
 - Mockito
 - MongoDB
-  - Should be running on http://localhost:27017.
+  - Should be running on: <http://localhost:27017>.
 
-Operations
--
+##Operations
+#####Add planet
 
-<b>Add Planets</b>
-
-When starting the application for the first time, the collection is empty, so let's add two planets, by posting to the operation two times.
+When starting the application the first time, the collection is empty. We can make the following two POSTs to add the two planets.
 
 <pre>
 <b><u>Request</u></b>
@@ -63,7 +57,7 @@ POST http://localhost:8080/planets
 (empty body) (for each request)
 </pre>
 
-<b>Get List</b>
+#####List all planets
 
 The two planets have now been added and can be listed.
 
@@ -91,10 +85,7 @@ GET http://localhost:8080/planets
 ]
 </pre>
 
-<b>Get by ID</b>
-
-Retrieving a single planet by ID.
-
+#####Get single planet by ID
 <pre>
 <b><u>Request</u></b>
 GET http://localhost:8080/planets/id/5d1188e543d0433b7cef006d
@@ -109,10 +100,7 @@ GET http://localhost:8080/planets/id/5d1188e543d0433b7cef006d
 }
 </pre>
 
-<b>Get by Name</b>
-
-Retrieving a single planet by Name.
-
+#####Get single planet by name
 <pre>
 <b><u>Request</u></b>
 GET http://localhost:8080/planets/name/Some unknown planet
@@ -127,10 +115,7 @@ GET http://localhost:8080/planets/name/Some unknown planet
 }
 </pre>
 
-<b>Delete</b>
-
-Deleting a single planet by ID.
-
+#####Delete planet by ID
 <pre>
 <b><u>Request</u></b>
 DELETE http://localhost:8080/5d1188ed43d0433b7cef006e
@@ -139,46 +124,42 @@ DELETE http://localhost:8080/5d1188ed43d0433b7cef006e
 (empty body)
 </pre>
 
-Software Architecture
--
+##Software Architecture
 The solution is implemented having a modern, loosely coupled, and highly maintainable architecture. It applies Domain-Driven Design (DDD) principles and the Onion Architecture. 
 
 The following areas correspond to the folder structure in the solution.
 
-- <b>Domain</b>
-    - The domain has the Planet model class and PlanetRepository interface.
+- #####Domain
+  - The domain has the Planet model class and PlanetRepository interface.
 
-- <b>Infrastructure</b>
-    - This has the MongoDB implementation of the PlanetRepository interface, the PlanetMongoDb model class that is saved in and retrieved from the database, plus mappers between the two different Planet model classes in the Domain and Infrastructure, respectively.
+- #####Infrastructure
+  - The MongoDB implementation of the PlanetRepository interface, the PlanetMongoDb model class that is saved in and retrieved from the database, plus mappers between the Planet (in Domain) and PlanetMongoDb model classes.
 
-- <b>Services</b>
-    - The PlanetService resides in the layer on top of the PlanetRepository interface and invokes its methods (that are implemented further down in the PlanetMongoDbRepository).
-    - The SwapiService handles the external integration with SWAPI (https://swapi.co/api/planets/) plus caching of the results after they are retrieved for all planets in SWAPI on application startup. (See below).
+- #####Services
+  - The PlanetService resides in the layer on top of the PlanetRepository interface and invokes its methods (that are implemented further down in PlanetMongoDbRepository.
+  
+  - The SwapiService handles the external integration with SWAPI (<https://swapi.co/api/planets/>) plus caching of all relevant SWAPI data. Also see: [External Integration: SWAPI (Star Wars API)](#external-integration-swapi-star-wars-api).
 
-- <b>Presentation (API)</b>
-    - This has the Controllers that define the REST operations and routing, as well as the PlanetDto model class (as a Data Transfer Object), and mappers for mapping between the PlanetDto and the Planet model class in the Domain. 
+- #####Presentation (API)
+  - This has the Controllers that define the REST operations and routing, as well as the PlanetDto model class (as a Data Transfer Object), and mappers for mapping between PlanetDto and Planet (in Domain). 
 
-External Integration: SWAPI (Star Wars API)
--
-For every planet that a user adds via the REST API, it may also exist in SWAPI with the same name. When retrieving planets that also exist in SWAPI, the number of movies the planet is featured in should also be returned from the REST API.
+##External Integration: SWAPI (Star Wars API)
+Planets are added via the REST API. For every planet that is retrieved, the number of movies from SWAPI is part of the response object.
 
-This can be solved in different ways:
+- The REST API neither makes a lookup in the external SWAPI when a planet is saved nor retrieved. That would give higher response times for the users.
 
-- <b>On save Planet:</b> When a new planet is added, the number of movies is looked up in SWAPI and saved in the database along with the rest of the model.
-- <b>On retrieve Planet:</b> Lookup in the SWAPI as part of the mapping from PlanetMongoDb to the Planet Domain model class to give a value to number of movies the planet is in. 
-- <b>On application start: </b> Fetch and cache a (quick-lookup) HashMap of all Planet names and the number of movies they are in.
+- Instead, the REST API fetches all "Planet Name" → "Number of Movies" relations from SWAPI on the first time they are needed. The data will stay cached in memory until the application is stopped.
+  - Thus, the first REST API call after starting the application takes around +3 seconds to "warm up" the application i.e. call SWAPI to build the cache.
+  - Afterwards, all relevant SWAPI data will be cached, and lookups will be fast. 
 
-I decided to go with the third option, because it results in a faster average service response time than the first two, and thus a better user experience.
-
-So, when the application starts, the SwapiService fetches all planets from SWAPI and stores the name and number of all movies in a quick-lookup HashMap. This adds 3-5 seconds of startup time to the application, which is bearable for now.
-
-Data Storage: MongoDB
--
+##Data Storage: MongoDB
 MongoDB is used for data storage, which is configured through Spring Data annotations to define the collection name, set up the ID column and make a unique index on the Name column.
 
 This enables quick lookup by ID or Name as required by two of the operations. 
 
-Testing
--
-- <b>Manual testing:</b> This has been done for each operation using a REST client (e.g. Postman). Some of the results are displayed in the Operations section.  
-- <b>Automated testing:</b> Unit and integration tests: TODO.
+##Testing
+- **Manual testing**
+  - This has been done for each operation with a REST client (e.g., Postman). The HTTP requests and responses are displayed in the [Operations](#operations) section.
+  
+- **Automated testing**
+  - Yes, unit testing using JUnit and Mockito.

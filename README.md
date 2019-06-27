@@ -131,7 +131,7 @@ DELETE http://localhost:8080/5d1188ed43d0433b7cef006e
 
 Software Architecture
 -
-The application is implemented having a modern, loosely coupled, and highly maintainable architecture. It applies Domain-Driven Design (DDD) principles and the Onion Architecture. 
+The application has a modern, loosely coupled, and highly testable and maintainable architecture. It applies Domain-Driven Design (DDD) and Inversion of Control (IoC) principles in an Onion Architecture. 
 
 The following areas correspond to the folder structure in the project.
 

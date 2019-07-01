@@ -6,7 +6,6 @@ import com.b2w.starwars.presentation.mappers.PlanetDtoMapper;
 import com.b2w.starwars.presentation.models.PlanetDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +22,13 @@ import java.util.stream.Collectors;
 public class PlanetController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlanetController.class);
 
-    @Autowired
-    private PlanetService planetService;
+    private final PlanetService planetService;
+    private final PlanetDtoMapper planetDtoMapper;
 
-    @Autowired
-    private PlanetDtoMapper planetDtoMapper;
+    public PlanetController(PlanetService planetService, PlanetDtoMapper planetDtoMapper) {
+        this.planetService = planetService;
+        this.planetDtoMapper = planetDtoMapper;
+    }
 
     @GetMapping
     public ResponseEntity<List<PlanetDto>> getAll() {

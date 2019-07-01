@@ -5,7 +5,6 @@ import com.b2w.starwars.domain.repositories.PlanetRepository;
 import com.b2w.starwars.infrastructure.mappers.PlanetMongoDbMapper;
 import com.b2w.starwars.infrastructure.models.PlanetMongoDb;
 import com.mongodb.client.result.DeleteResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -20,14 +19,16 @@ import java.util.stream.Collectors;
 @Repository
 @Primary
 public class PlanetMongoDbRepository implements PlanetRepository {
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private PlanetMongoDbMapper planetMongoDbMapper;
+    private final MongoTemplate mongoTemplate;
+    private final PlanetMongoDbMapper planetMongoDbMapper;
 
     @Value("${mongodb.collection-name}")
     private String collectionName;
+
+    public PlanetMongoDbRepository(MongoTemplate mongoTemplate, PlanetMongoDbMapper planetMongoDbMapper) {
+        this.mongoTemplate = mongoTemplate;
+        this.planetMongoDbMapper = planetMongoDbMapper;
+    }
 
     @Override
     public List<Planet> getAll() {
@@ -52,7 +53,7 @@ public class PlanetMongoDbRepository implements PlanetRepository {
     @Override
     public void delete(String id) {
         DeleteResult deleteResult = mongoTemplate.remove(Query.query(Criteria.where("_id").is(id)), collectionName);
-        if (!deleteResult.wasAcknowledged()) {
+        if (!deleteResult.wasAcknowledged() || deleteResult.getDeletedCount() == 0) {
             throw new EmptyResultDataAccessException(1);
         }
     }

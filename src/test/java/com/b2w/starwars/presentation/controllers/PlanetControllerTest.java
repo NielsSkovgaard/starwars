@@ -213,35 +213,41 @@ public class PlanetControllerTest {
         // Mock MongoTemplate
         DeleteResult mockDeleteResult = Mockito.mock(DeleteResult.class);
         Mockito.when(mockDeleteResult.wasAcknowledged()).thenReturn(true);
+        Mockito.when(mockDeleteResult.getDeletedCount()).thenReturn(1L);
         MongoTemplate mockMongoTemplate = Mockito.mock(MongoTemplate.class);
         Mockito.when(mockMongoTemplate.remove(Query.query(Criteria.where("_id").is("5d13c0096c447e9610850ff0")), "planets")).thenReturn(mockDeleteResult);
         ReflectionTestUtils.setField(context.getBean(PlanetMongoDbRepository.class), "mongoTemplate", mockMongoTemplate);
 
         // Act
-        ResponseEntity<PlanetDto> result = planetController.delete("5d13c0096c447e9610850ff0");
+        ResponseEntity result = planetController.delete("5d13c0096c447e9610850ff0");
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         assertNull(result.getBody());
+        Mockito.verify(mockDeleteResult).wasAcknowledged();
+        Mockito.verify(mockDeleteResult).getDeletedCount();
         Mockito.verify(mockMongoTemplate).remove(Query.query(Criteria.where("_id").is("5d13c0096c447e9610850ff0")), "planets");
     }
 
     @Test
-    public void testDelete_NotAcknowledged() {
+    public void testDelete_NotFound() {
         // Arrange
         // Mock MongoTemplate
         DeleteResult mockDeleteResult = Mockito.mock(DeleteResult.class);
-        Mockito.when(mockDeleteResult.wasAcknowledged()).thenReturn(false);
+        Mockito.when(mockDeleteResult.wasAcknowledged()).thenReturn(true);
+        Mockito.when(mockDeleteResult.getDeletedCount()).thenReturn(0L);
         MongoTemplate mockMongoTemplate = Mockito.mock(MongoTemplate.class);
         Mockito.when(mockMongoTemplate.remove(Query.query(Criteria.where("_id").is("5d13cd41a1294f701239fed7")), "planets")).thenReturn(mockDeleteResult);
         ReflectionTestUtils.setField(context.getBean(PlanetMongoDbRepository.class), "mongoTemplate", mockMongoTemplate);
 
         // Act
-        ResponseEntity<PlanetDto> result = planetController.delete("5d13cd41a1294f701239fed7");
+        ResponseEntity result = planetController.delete("5d13cd41a1294f701239fed7");
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertNull(result.getBody());
+        Mockito.verify(mockDeleteResult).wasAcknowledged();
+        Mockito.verify(mockDeleteResult).getDeletedCount();
         Mockito.verify(mockMongoTemplate).remove(Query.query(Criteria.where("_id").is("5d13cd41a1294f701239fed7")), "planets");
     }
 }

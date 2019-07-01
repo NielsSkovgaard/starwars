@@ -4,14 +4,13 @@ import com.b2w.starwars.application.models.PlanetSwapi;
 import com.b2w.starwars.application.models.PlanetSwapiPagedSearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -21,8 +20,7 @@ import java.util.HashMap;
 public class SwapiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwapiService.class);
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Value("${services.swapi.url}")
     private String swapiUrl;
@@ -31,6 +29,10 @@ public class SwapiService {
     private String userAgent;
 
     private HashMap<String, Integer> planetMovies;
+
+    public SwapiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public int getMovies(String planetName) {
         if (planetName != null) {
@@ -53,7 +55,7 @@ public class SwapiService {
         String searchUrl = swapiUrl;
 
         do {
-            PlanetSwapiPagedSearchResult result = fetchData(restTemplate, httpEntity, searchUrl);
+            PlanetSwapiPagedSearchResult result = fetchPagedSearchResult(httpEntity, searchUrl);
             if (result != null && result.getResults() != null) {
                 for (PlanetSwapi planet : result.getResults()) {
                     hashMap.put(planet.getName().toLowerCase(), planet.getFilms().size());
@@ -68,14 +70,14 @@ public class SwapiService {
 
     private HttpEntity<PlanetSwapiPagedSearchResult> buildHttpEntity() {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add(HttpHeaders.USER_AGENT, userAgent);
         return new HttpEntity<>(httpHeaders);
     }
 
-    private PlanetSwapiPagedSearchResult fetchData(RestTemplate restTemplate, HttpEntity<PlanetSwapiPagedSearchResult> httpEntity, String apiUrl) {
-        ResponseEntity<PlanetSwapiPagedSearchResult> responseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, httpEntity, PlanetSwapiPagedSearchResult.class);
+    private PlanetSwapiPagedSearchResult fetchPagedSearchResult(HttpEntity<PlanetSwapiPagedSearchResult> httpEntity, String url) {
+        ResponseEntity<PlanetSwapiPagedSearchResult> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, PlanetSwapiPagedSearchResult.class);
         HttpStatus statusCode = responseEntity.getStatusCode();
 
         if (statusCode == HttpStatus.OK) {

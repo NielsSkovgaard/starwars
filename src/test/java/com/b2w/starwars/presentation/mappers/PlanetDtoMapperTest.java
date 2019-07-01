@@ -31,7 +31,7 @@ public class PlanetDtoMapperTest {
     }
 
     @Test
-    public void testMapDomainToDto_nullParameter() {
+    public void testMapDomainToDto_NullParameter() {
         // Arrange
         Planet input = null;
 
@@ -56,7 +56,7 @@ public class PlanetDtoMapperTest {
     }
 
     @Test
-    public void testMapDtoToDomain_nullParameter() {
+    public void testMapDtoToDomain_NullParameter() {
         // Arrange
         PlanetDto input = null;
 

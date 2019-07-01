@@ -38,7 +38,7 @@ public class PlanetMongoDbMapperTest {
     }
 
     @Test
-    public void testMapDomainToMongoDb_nullParameter() {
+    public void testMapDomainToMongoDb_NullParameter() {
         // Arrange
         Planet input = null;
 
@@ -65,7 +65,7 @@ public class PlanetMongoDbMapperTest {
     }
 
     @Test
-    public void testMapMongoDbToDomain_nullParameter() {
+    public void testMapMongoDbToDomain_NullParameter() {
         // Arrange
         PlanetMongoDb input = null;
 

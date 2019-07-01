@@ -37,7 +37,7 @@ Operations
 - 
 **Add planet**
 
-When starting the application the first time, the collection is empty. We can make the following two POSTs to add the two planets.
+When starting the application the first time, the collection is empty. We can make the following two POSTs to add two planets.
 
 <pre>
 <b><u>Request</u></b>

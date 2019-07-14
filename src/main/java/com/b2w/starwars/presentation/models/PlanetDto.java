@@ -1,8 +1,11 @@
 package com.b2w.starwars.presentation.models;
 
+import com.b2w.starwars.core.Entity;
+import com.b2w.starwars.core.PresentationObject;
+
 import java.util.Objects;
 
-public class PlanetDto {
+public class PlanetDto implements PresentationObject, Entity<String> {
     private String id;
     private String name;
     private String climate;

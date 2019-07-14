@@ -13,55 +13,55 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PlanetDtoMapperTest {
+public class DomainPresentationMapperTest {
     @Autowired
-    private PlanetDtoMapper planetDtoMapper;
+    private DomainPresentationMapper<Planet, PlanetDto> domainPresentationMapper;
 
     @Test
-    public void testMapDomainToDto() {
+    public void testMapDomainToPresentation() {
         // Arrange
         Planet input = new Planet("id", "name", "climate", "terrain", 2);
         PlanetDto expected = new PlanetDto("id", "name", "climate", "terrain", 2);
 
         // Act
-        PlanetDto result = planetDtoMapper.map(input);
+        PlanetDto result = domainPresentationMapper.map(input);
 
         // Assert
         assertEquals(expected, result);
     }
 
     @Test
-    public void testMapDomainToDto_NullParameter() {
+    public void testMapDomainToPresentation_NullParameter() {
         // Arrange
         Planet input = null;
 
         // Act
-        PlanetDto result = planetDtoMapper.map(input);
+        PlanetDto result = domainPresentationMapper.map(input);
 
         // Assert
         assertNull(result);
     }
 
     @Test
-    public void testMapDtoToDomain() {
+    public void testMapPresentationToDomain() {
         // Arrange
         PlanetDto input = new PlanetDto("id", "name", "climate", "terrain", 2);
         Planet expected = new Planet("id", "name", "climate", "terrain", 2);
 
         // Act
-        Planet result = planetDtoMapper.map(input);
+        Planet result = domainPresentationMapper.map(input);
 
         // Assert
         assertEquals(expected, result);
     }
 
     @Test
-    public void testMapDtoToDomain_NullParameter() {
+    public void testMapPresentationToDomain_NullParameter() {
         // Arrange
         PlanetDto input = null;
 
         // Act
-        Planet result = planetDtoMapper.map(input);
+        Planet result = domainPresentationMapper.map(input);
 
         // Assert
         assertNull(result);

@@ -17,47 +17,47 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PlanetMongoDbMapperTest {
+public class DomainInfrastructureMapperTest {
     @MockBean
     private SwapiService mockSwapiService;
 
     @Autowired
-    private PlanetMongoDbMapper planetMongoDbMapper;
+    private DomainInfrastructureMapper<Planet, PlanetMongoDb> domainInfrastructureMapper;
 
     @Test
-    public void testMapDomainToMongoDb() {
+    public void testMapDomainToInfrastructure() {
         // Arrange
-        Planet planet = new Planet(null, "name", "climate", "terrain", 2);
+        Planet input = new Planet(null, "name", "climate", "terrain", 2);
         PlanetMongoDb expected = new PlanetMongoDb("name", "climate", "terrain");
 
         // Act
-        PlanetMongoDb result = planetMongoDbMapper.map(planet);
+        PlanetMongoDb result = domainInfrastructureMapper.map(input);
 
         // Assert
         assertEquals(expected, result);
     }
 
     @Test
-    public void testMapDomainToMongoDb_NullParameter() {
+    public void testMapDomainToInfrastructure_NullParameter() {
         // Arrange
         Planet input = null;
 
         // Act
-        PlanetMongoDb result = planetMongoDbMapper.map(input);
+        PlanetMongoDb result = domainInfrastructureMapper.map(input);
 
         // Assert
         assertNull(result);
     }
 
     @Test
-    public void testMapMongoDbToDomain() {
+    public void testMapInfrastructureToDomain() {
         // Arrange
         PlanetMongoDb input = new PlanetMongoDb(new ObjectId("507f191e810c19729de860ea"), "name", "climate", "terrain");
         Planet expected = new Planet("507f191e810c19729de860ea", "name", "climate", "terrain", 2);
         Mockito.when(mockSwapiService.getMovies("name")).thenReturn(2);
 
         // Act
-        Planet result = planetMongoDbMapper.map(input);
+        Planet result = domainInfrastructureMapper.map(input);
 
         // Assert
         assertEquals(expected, result);
@@ -65,12 +65,12 @@ public class PlanetMongoDbMapperTest {
     }
 
     @Test
-    public void testMapMongoDbToDomain_NullParameter() {
+    public void testMapInfrastructureToDomain_NullParameter() {
         // Arrange
         PlanetMongoDb input = null;
 
         // Act
-        Planet result = planetMongoDbMapper.map(input);
+        Planet result = domainInfrastructureMapper.map(input);
 
         // Assert
         assertNull(result);

@@ -1,5 +1,7 @@
 package com.b2w.starwars.infrastructure.models;
 
+import com.b2w.starwars.core.Entity;
+import com.b2w.starwars.core.InfrastructureObject;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -8,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Objects;
 
 @Document(collection = "planets")
-public class PlanetMongoDb {
+public class PlanetMongoDb implements InfrastructureObject, Entity<ObjectId> {
     @Id
     private ObjectId id;
 

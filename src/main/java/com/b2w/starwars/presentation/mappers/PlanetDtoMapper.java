@@ -5,7 +5,8 @@ import com.b2w.starwars.presentation.models.PlanetDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlanetDtoMapper {
+public class PlanetDtoMapper implements DomainPresentationMapper<Planet, PlanetDto> {
+    @Override
     public PlanetDto map(Planet planet) {
         if (planet == null) {
             return null;
@@ -13,6 +14,7 @@ public class PlanetDtoMapper {
         return new PlanetDto(planet.getId(), planet.getName(), planet.getClimate(), planet.getTerrain(), planet.getMovies());
     }
 
+    @Override
     public Planet map(PlanetDto planetDto) {
         if (planetDto == null) {
             return null;

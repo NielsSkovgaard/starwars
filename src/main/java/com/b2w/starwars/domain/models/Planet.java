@@ -1,8 +1,11 @@
 package com.b2w.starwars.domain.models;
 
+import com.b2w.starwars.core.DomainObject;
+import com.b2w.starwars.core.Entity;
+
 import java.util.Objects;
 
-public class Planet {
+public class Planet implements DomainObject, Entity<String> {
     private String id;
     private String name;
     private String climate;
@@ -20,10 +23,12 @@ public class Planet {
         this.movies = movies;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }

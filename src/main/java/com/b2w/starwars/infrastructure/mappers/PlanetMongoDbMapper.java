@@ -6,13 +6,14 @@ import com.b2w.starwars.infrastructure.models.PlanetMongoDb;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlanetMongoDbMapper {
+public class PlanetMongoDbMapper implements DomainInfrastructureMapper<Planet, PlanetMongoDb> {
     private final SwapiService swapiService;
 
     public PlanetMongoDbMapper(SwapiService swapiService) {
         this.swapiService = swapiService;
     }
 
+    @Override
     public PlanetMongoDb map(Planet planet) {
         if (planet == null) {
             return null;
@@ -20,6 +21,7 @@ public class PlanetMongoDbMapper {
         return new PlanetMongoDb(planet.getName(), planet.getClimate(), planet.getTerrain());
     }
 
+    @Override
     public Planet map(PlanetMongoDb planetMongoDb) {
         if (planetMongoDb == null) {
             return null;

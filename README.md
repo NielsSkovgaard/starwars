@@ -66,7 +66,7 @@ POST http://localhost:8080/planets
 
 The two planets have now been added and can be listed.
 
-Notice that the first planet exists in the Star Wars API and therefore has two movies.
+Notice that the first planet exists in the Star Wars API where it has two movies.
 <pre>
 <b><u>Request</u></b>
 GET http://localhost:8080/planets
@@ -137,19 +137,27 @@ The application has a modern, loosely coupled, and highly testable and maintaina
 
 The following areas correspond to the folder structure in the project.
 
+- **Presentation (API)**
+  - PlanetController: Defines REST operations and routing.
+  - PlanetDto (Data Transfer Object) model sent via PlanetController.
+  - Mapper for Planet (Domain) ↔ PlanetDto (Presentation).
+
+- **Application**
+  - PlanetService: Invokes methods in PlanetRepository.
+  - SwapiService: Handles external integration with SWAPI (<https://swapi.co/api/planets/>) plus caching of relevant SWAPI data. See also [External Integration: SWAPI (Star Wars API)](#external-integration-swapi-star-wars-api).
+
 - **Domain**
-  - The domain has the Planet model class and PlanetRepository interface.
+  - Planet model.
+  - Repository interfaces: PlanetRepository and the generic Repository interface.
 
 - **Infrastructure**
-  - The MongoDB implementation of the PlanetRepository interface, the PlanetMongoDb model class that is saved in and retrieved from the database, plus mappers between the Planet (in Domain) and PlanetMongoDb model classes.
+  - PlanetMongoDb model.
+  - MongoDbRepository: Generic MongoDB repository.
+  - PlanetMongoDbRepository that extends MongoDbRepository and implements PlanetRepository (in Domain).
+  - Mapper for Planet (Domain) ↔ PlanetMongoDb (Infrastructure).
 
-- **Services**
-  - The PlanetService resides in the layer on top of the PlanetRepository interface and invokes its methods (that are implemented further down in PlanetMongoDbRepository.
-  
-  - The SwapiService handles the external integration with SWAPI (<https://swapi.co/api/planets/>) plus caching of all relevant SWAPI data. See also [External Integration: SWAPI (Star Wars API)](#external-integration-swapi-star-wars-api).
-
-- **Presentation (API)**
-  - This has the Controllers that define the REST operations and routing, as well as the PlanetDto model class (as a Data Transfer Object), and mappers for mapping between PlanetDto and Planet (in Domain). 
+- **Core**
+  - Entity&lt;TId&gt; interface plus DomainObject, InfrastructureObject, and PresentationObject interfaces. 
 
 External Integration: SWAPI (Star Wars API)
 -

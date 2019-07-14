@@ -1,36 +1,17 @@
 package com.b2w.starwars.application.services;
 
 import com.b2w.starwars.domain.models.Planet;
-import com.b2w.starwars.domain.repositories.PlanetRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class PlanetService {
-    private final PlanetRepository planetRepository;
+public interface PlanetService {
+    List<Planet> getAll();
 
-    public PlanetService(PlanetRepository planetRepository) {
-        this.planetRepository = planetRepository;
-    }
+    Planet getById(String id);
 
-    public List<Planet> getAll() {
-        return planetRepository.getAll();
-    }
+    Planet getByName(String name);
 
-    public Planet getById(String id) {
-        return planetRepository.getById(id);
-    }
+    Planet save(Planet planet);
 
-    public Planet getByName(String name) {
-        return planetRepository.getByName(name);
-    }
-
-    public Planet save(Planet planet) {
-        return planetRepository.save(planet);
-    }
-
-    public void delete(String id) {
-        planetRepository.delete(id);
-    }
+    void delete(String id);
 }

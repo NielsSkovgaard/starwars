@@ -125,7 +125,7 @@ GET http://localhost:8080/planets/name/Some unknown planet
 **Delete planet by ID**
 <pre>
 <b><u>Request</u></b>
-DELETE http://localhost:8080/5d1188ed43d0433b7cef006e
+DELETE http://localhost:8080/planets/5d1188ed43d0433b7cef006e
 
 <b><u>Response (204 No Content)</u></b>
 (empty body)
@@ -171,7 +171,7 @@ Planets are added via the REST API. For every planet that is retrieved, the numb
 
 Data Storage: MongoDB
 -
-MongoDB is used for data storage, which is configured through Spring Data annotations to define the collection name, set up the ID column and make a unique index on the Name column.
+MongoDB is used for data storage, which is configured through Spring Data annotations to define the collection name, set up the ID column, and make a unique index on the Name column.
 
 This enables quick lookup by ID or Name as required by two of the operations. 
 

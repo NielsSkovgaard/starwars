@@ -157,7 +157,10 @@ The following areas correspond to the folder structure in the project.
   - Mapper for Planet (Domain) ↔ PlanetMongoDb (Infrastructure).
 
 - **Core**
-  - Entity&lt;TId&gt; interface plus DomainObject, InfrastructureObject, and PresentationObject interfaces. 
+  - Entity&lt;TId&gt; interface plus DomainObject, InfrastructureObject, and PresentationObject interfaces.
+
+- **Config**
+  - Configuration interface/class with data from the src/main/resources/application.properties file.
 
 External Integration: SWAPI (Star Wars API)
 -

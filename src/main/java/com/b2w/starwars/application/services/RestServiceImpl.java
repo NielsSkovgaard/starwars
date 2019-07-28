@@ -10,12 +10,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collections;
 
 @Service
-public class RestGetServiceImpl implements RestGetService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestGetServiceImpl.class);
+public class RestServiceImpl implements RestService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestServiceImpl.class);
 
     private final RestTemplate restTemplate;
 
-    public RestGetServiceImpl(RestTemplate restTemplate) {
+    public RestServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -29,7 +29,7 @@ public class RestGetServiceImpl implements RestGetService {
             return responseEntity.getBody();
         }
 
-        LOGGER.error("SwapiService - response status code: {}.", statusCode);
+        LOGGER.error("RestServiceImpl - response status code: {}.", statusCode);
         throw new ResponseStatusException(statusCode);
     }
 

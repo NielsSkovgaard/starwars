@@ -145,6 +145,7 @@ The following areas correspond to the folder structure in the project.
 - **Application**
   - PlanetService: Invokes methods in PlanetRepository.
   - SwapiService: Handles external integration with SWAPI (<https://swapi.co/api/planets/>) plus caching of relevant SWAPI data. See also [External Integration: SWAPI (Star Wars API)](#external-integration-swapi-star-wars-api).
+  - RestService: Used to call REST endpoints. This is used by SwapiService.
 
 - **Domain**
   - Planet model.

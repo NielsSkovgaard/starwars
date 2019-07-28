@@ -16,13 +16,13 @@ import java.util.HashMap;
 public class SwapiServiceImpl implements SwapiService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwapiServiceImpl.class);
 
-    private final RestGetService restGetService;
+    private final RestService restService;
     private final Configuration configuration;
 
     private HashMap<String, Integer> planetMovies;
 
-    public SwapiServiceImpl(RestGetService restGetService, Configuration configuration) {
-        this.restGetService = restGetService;
+    public SwapiServiceImpl(RestService restService, Configuration configuration) {
+        this.restService = restService;
         this.configuration = configuration;
     }
 
@@ -46,7 +46,7 @@ public class SwapiServiceImpl implements SwapiService {
         String searchUrl = configuration.getSwapiUrl();
 
         do {
-            PlanetSwapiPagedSearchResult result = restGetService.get(searchUrl, configuration.getUserAgent(), PlanetSwapiPagedSearchResult.class);
+            PlanetSwapiPagedSearchResult result = restService.get(searchUrl, configuration.getUserAgent(), PlanetSwapiPagedSearchResult.class);
             if (result == null || result.getResults() == null) {
                 LOGGER.error("PlanetSwapiPagedSearchResult is null or .getResults() is null.");
                 break;

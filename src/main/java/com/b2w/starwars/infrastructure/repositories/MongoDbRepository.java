@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public abstract class MongoDbRepository<TDomainId, TDomainEntity extends DomainObject & Entity<TDomainId>, TInfrastructureId, TInfrastructureEntity extends InfrastructureObject & Entity<TInfrastructureId>> implements Repository<TDomainId, TDomainEntity> {
@@ -38,7 +40,7 @@ public abstract class MongoDbRepository<TDomainId, TDomainEntity extends DomainO
 
     @Override
     public TDomainEntity getById(TDomainId id) {
-        return getSingle(MongoDbIdFieldName, id);
+        return domainInfrastructureMapper.map(mongoTemplate.findOne(Query.query(Criteria.where(MongoDbIdFieldName).is(id)), getTInfrastructureEntityClass(), mongoDbCollectionName));
     }
 
     @Override
@@ -54,8 +56,9 @@ public abstract class MongoDbRepository<TDomainId, TDomainEntity extends DomainO
         }
     }
 
-    public TDomainEntity getSingle(String fieldName, Object value) {
-        return domainInfrastructureMapper.map(mongoTemplate.findOne(Query.query(Criteria.where(fieldName).is(value)), getTInfrastructureEntityClass(), mongoDbCollectionName));
+    TDomainEntity getSingleCaseInsensitive(String fieldName, String value) {
+        Pattern pattern = Pattern.compile(MessageFormat.format("^{0}$", Pattern.quote(value)), Pattern.CASE_INSENSITIVE);
+        return domainInfrastructureMapper.map(mongoTemplate.findOne(Query.query(Criteria.where(fieldName).regex(pattern)), getTInfrastructureEntityClass(), mongoDbCollectionName));
     }
 
     protected abstract Class<TInfrastructureEntity> getTInfrastructureEntityClass();

@@ -22,8 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -124,7 +126,8 @@ public class PlanetControllerTest {
 
         // Mock MongoTemplate
         MongoTemplate mockMongoTemplate = Mockito.mock(MongoTemplate.class);
-        Mockito.when(mockMongoTemplate.findOne(Query.query(Criteria.where("name").is("name1")), PlanetMongoDb.class, "planets")).thenReturn(planetMongoDb);
+        Pattern pattern = Pattern.compile(MessageFormat.format("^{0}$", Pattern.quote("name1")), Pattern.CASE_INSENSITIVE);
+        Mockito.when(mockMongoTemplate.findOne(Query.query(Criteria.where("name").regex(pattern)), PlanetMongoDb.class, "planets")).thenReturn(planetMongoDb);
         ReflectionTestUtils.setField(context.getBean(PlanetMongoDbRepository.class), "mongoTemplate", mockMongoTemplate);
 
         // Mock SwapiService
@@ -136,7 +139,7 @@ public class PlanetControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(expected, result.getBody());
-        Mockito.verify(mockMongoTemplate).findOne(Query.query(Criteria.where("name").is("name1")), PlanetMongoDb.class, "planets");
+        Mockito.verify(mockMongoTemplate).findOne(Query.query(Criteria.where("name").regex(pattern)), PlanetMongoDb.class, "planets");
         Mockito.verify(mockSwapiService).getMovies("name1");
     }
 
@@ -145,7 +148,8 @@ public class PlanetControllerTest {
         // Arrange
         // Mock MongoTemplate
         MongoTemplate mockMongoTemplate = Mockito.mock(MongoTemplate.class);
-        Mockito.when(mockMongoTemplate.findOne(Query.query(Criteria.where("name").is("name1")), PlanetMongoDb.class, "planets")).thenReturn(null);
+        Pattern pattern = Pattern.compile(MessageFormat.format("^{0}$", Pattern.quote("name1")), Pattern.CASE_INSENSITIVE);
+        Mockito.when(mockMongoTemplate.findOne(Query.query(Criteria.where("name").regex(pattern)), PlanetMongoDb.class, "planets")).thenReturn(null);
         ReflectionTestUtils.setField(context.getBean(PlanetMongoDbRepository.class), "mongoTemplate", mockMongoTemplate);
 
         // Act
@@ -154,7 +158,7 @@ public class PlanetControllerTest {
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
         assertNull(result.getBody());
-        Mockito.verify(mockMongoTemplate).findOne(Query.query(Criteria.where("name").is("name1")), PlanetMongoDb.class, "planets");
+        Mockito.verify(mockMongoTemplate).findOne(Query.query(Criteria.where("name").regex(pattern)), PlanetMongoDb.class, "planets");
     }
 
     @Test

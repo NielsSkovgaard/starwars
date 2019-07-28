@@ -17,7 +17,7 @@ public class PlanetMongoDbRepository extends MongoDbRepository<String, Planet, O
 
     @Override
     public Planet getByName(String name) {
-        return getSingle("name", name);
+        return getSingleCaseInsensitive("name", name);
     }
 
     @Override

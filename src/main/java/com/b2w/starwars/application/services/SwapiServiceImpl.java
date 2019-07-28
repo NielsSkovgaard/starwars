@@ -52,12 +52,12 @@ public class SwapiServiceImpl implements SwapiService {
                 break;
             }
             for (PlanetSwapi planet : result.getResults()) {
-                hashMap.put(planet.getName(), planet.getFilms().size());
+                hashMap.put(planet.getName().toLowerCase(), planet.getFilms().size());
             }
             searchUrl = result.getNext();
         } while (searchUrl != null && searchUrl.length() > 0);
 
-        LOGGER.info("Finished building SWAPI cache.");
+        LOGGER.info("Finished building SWAPI cache - found {} planets.", hashMap.size());
         return hashMap;
     }
 }

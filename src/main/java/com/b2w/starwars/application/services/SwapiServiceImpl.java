@@ -46,7 +46,7 @@ public class SwapiServiceImpl implements SwapiService {
         String searchUrl = configuration.getSwapiUrl();
 
         do {
-            PlanetSwapiPagedSearchResult result = restService.get(searchUrl, configuration.getUserAgent(), PlanetSwapiPagedSearchResult.class);
+            PlanetSwapiPagedSearchResult result = restService.get(searchUrl, PlanetSwapiPagedSearchResult.class);
             if (result == null || result.getResults() == null) {
                 LOGGER.error("PlanetSwapiPagedSearchResult is null or .getResults() is null.");
                 break;

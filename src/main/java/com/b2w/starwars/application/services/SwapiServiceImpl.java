@@ -40,7 +40,7 @@ public class SwapiServiceImpl implements SwapiService {
     }
 
     private HashMap<String, Integer> buildPlanetMovies() {
-        LOGGER.info("Starting building SWAPI cache.");
+        LOGGER.info("Starting building SWAPI cache");
 
         HashMap<String, Integer> hashMap = new HashMap<>();
         String searchUrl = configuration.getSwapiUrl();
@@ -48,7 +48,7 @@ public class SwapiServiceImpl implements SwapiService {
         do {
             PlanetSwapiPagedSearchResult result = restService.get(searchUrl, PlanetSwapiPagedSearchResult.class);
             if (result == null || result.getResults() == null) {
-                LOGGER.error("PlanetSwapiPagedSearchResult is null or .getResults() is null.");
+                LOGGER.error("PlanetSwapiPagedSearchResult is null or .getResults() is null");
                 break;
             }
             for (PlanetSwapi planet : result.getResults()) {
@@ -57,7 +57,7 @@ public class SwapiServiceImpl implements SwapiService {
             searchUrl = result.getNext();
         } while (searchUrl != null && searchUrl.length() > 0);
 
-        LOGGER.info("Finished building SWAPI cache - found {} planets.", hashMap.size());
+        LOGGER.info("Finished building SWAPI cache - found {} planets", hashMap.size());
         return hashMap;
     }
 }

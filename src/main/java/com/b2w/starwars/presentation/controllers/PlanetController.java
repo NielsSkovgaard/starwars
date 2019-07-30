@@ -69,10 +69,10 @@ public class PlanetController {
                     .toUri();
             return ResponseEntity.created(planetUrl).build();
         } catch (ValidationException e) {
-            LOGGER.error("ValidationException on save.", e);
+            LOGGER.error("ValidationException on save", e);
             return ResponseEntity.badRequest().build();
         } catch (DataIntegrityViolationException e) {
-            LOGGER.error("DataIntegrityViolationException on save.", e);
+            LOGGER.error("DataIntegrityViolationException on save", e);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -83,7 +83,7 @@ public class PlanetController {
             planetService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (EmptyResultDataAccessException e) {
-            LOGGER.error("ID not found.", e);
+            LOGGER.error("ID not found", e);
             return ResponseEntity.notFound().build();
         }
     }

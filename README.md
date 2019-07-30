@@ -5,8 +5,6 @@ About
 -
 The application allows its users to maintain a collection of planets in the Star Wars universe through a REST API.
 
-It will run on <http://localhost:8080/planets>.
-
 **Available operations** (see also [Operations](#operations))
 - Add new planet
 - List all planets
@@ -31,7 +29,30 @@ Technologies
 - JUnit
 - Mockito
 - MongoDB
-  - Should be running on <http://localhost:27017>.
+
+Running the Application
+-
+**MongoDB**
+
+MongoDB should be running on <http://localhost:27017>.
+
+**Application**
+
+You can either import and run the application using your favorite IDE or use the following commands.
+
+Build an executable .jar-file with Maven:
+
+<pre>
+./mvnw package
+</pre>
+
+Then run the application:
+
+<pre>
+java -jar ./target/starwars-0.0.1-SNAPSHOT.jar
+</pre>
+
+It will run on <http://localhost:8080/planets>.
 
 Operations
 - 

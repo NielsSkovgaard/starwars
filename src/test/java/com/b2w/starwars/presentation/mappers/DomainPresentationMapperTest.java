@@ -2,6 +2,7 @@ package com.b2w.starwars.presentation.mappers;
 
 import com.b2w.starwars.domain.models.Planet;
 import com.b2w.starwars.presentation.models.PlanetDto;
+import com.b2w.starwars.presentation.models.PlanetDtoCreate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertNull;
 @SpringBootTest
 public class DomainPresentationMapperTest {
     @Autowired
-    private DomainPresentationMapper<Planet, PlanetDto> domainPresentationMapper;
+    private DomainPresentationMapper<Planet, PlanetDto, PlanetDtoCreate> domainPresentationMapper;
 
     @Test
     public void testMapDomainToPresentation() {
@@ -43,10 +44,10 @@ public class DomainPresentationMapperTest {
     }
 
     @Test
-    public void testMapPresentationToDomain() {
+    public void testMapPresentationCreateToDomain() {
         // Arrange
-        PlanetDto input = new PlanetDto("id", "name", "climate", "terrain", 2);
-        Planet expected = new Planet("id", "name", "climate", "terrain", 2);
+        PlanetDtoCreate input = new PlanetDtoCreate("name", "climate", "terrain");
+        Planet expected = new Planet("name", "climate", "terrain");
 
         // Act
         Planet result = domainPresentationMapper.map(input);
@@ -56,9 +57,9 @@ public class DomainPresentationMapperTest {
     }
 
     @Test
-    public void testMapPresentationToDomain_NullParameter() {
+    public void testMapPresentationCreateToDomain_NullParameter() {
         // Arrange
-        PlanetDto input = null;
+        PlanetDtoCreate input = null;
 
         // Act
         Planet result = domainPresentationMapper.map(input);

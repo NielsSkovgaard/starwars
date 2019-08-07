@@ -4,6 +4,7 @@ import com.b2w.starwars.application.services.SwapiService;
 import com.b2w.starwars.infrastructure.models.PlanetMongoDb;
 import com.b2w.starwars.infrastructure.repositories.PlanetMongoDbRepository;
 import com.b2w.starwars.presentation.models.PlanetDto;
+import com.b2w.starwars.presentation.models.PlanetDtoCreate;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -164,7 +165,7 @@ public class PlanetControllerTest {
     @Test
     public void testSave() {
         // Arrange
-        PlanetDto planetDto = new PlanetDto(null, "name1", "climate1", "terrain1", 0);
+        PlanetDtoCreate planetDtoCreate = new PlanetDtoCreate("name1", "climate1", "terrain1");
         PlanetMongoDb planetMongoDbResult = new PlanetMongoDb(new ObjectId("5d13d35f993279be2b2e04f0"), "name1", "climate1", "terrain1");
 
         // Mock MongoTemplate
@@ -176,7 +177,7 @@ public class PlanetControllerTest {
         Mockito.when(mockSwapiService.getMovies("name1")).thenReturn(1);
 
         // Act
-        ResponseEntity<PlanetDto> result = planetController.save(planetDto);
+        ResponseEntity<PlanetDto> result = planetController.save(planetDtoCreate);
 
         // Assert
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
@@ -194,7 +195,7 @@ public class PlanetControllerTest {
     @Test
     public void testSave_BadRequest() {
         // Arrange
-        PlanetDto planetDto = new PlanetDto(null, null, "climate1", "terrain1", 0);
+        PlanetDtoCreate planetDtoCreate = new PlanetDtoCreate(null, "climate1", "terrain1");
         DataIntegrityViolationException expectedException = Mockito.mock(DataIntegrityViolationException.class);
 
         // Mock MongoTemplate
@@ -203,7 +204,7 @@ public class PlanetControllerTest {
         ReflectionTestUtils.setField(context.getBean(PlanetMongoDbRepository.class), "mongoTemplate", mockMongoTemplate);
 
         // Act
-        ResponseEntity<PlanetDto> result = planetController.save(planetDto);
+        ResponseEntity<PlanetDto> result = planetController.save(planetDtoCreate);
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());

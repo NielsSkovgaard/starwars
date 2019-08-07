@@ -2,10 +2,11 @@ package com.b2w.starwars.presentation.mappers;
 
 import com.b2w.starwars.domain.models.Planet;
 import com.b2w.starwars.presentation.models.PlanetDto;
+import com.b2w.starwars.presentation.models.PlanetDtoCreate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlanetDtoMapper implements DomainPresentationMapper<Planet, PlanetDto> {
+public class PlanetDtoMapper implements DomainPresentationMapper<Planet, PlanetDto, PlanetDtoCreate> {
     @Override
     public PlanetDto map(Planet planet) {
         if (planet == null) {
@@ -15,10 +16,10 @@ public class PlanetDtoMapper implements DomainPresentationMapper<Planet, PlanetD
     }
 
     @Override
-    public Planet map(PlanetDto planetDto) {
-        if (planetDto == null) {
+    public Planet map(PlanetDtoCreate planetDtoCreate) {
+        if (planetDtoCreate == null) {
             return null;
         }
-        return new Planet(planetDto.getId(), planetDto.getName(), planetDto.getClimate(), planetDto.getTerrain(), planetDto.getMovies());
+        return new Planet(planetDtoCreate.getName(), planetDtoCreate.getClimate(), planetDtoCreate.getTerrain());
     }
 }

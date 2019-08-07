@@ -15,6 +15,10 @@ public class Planet implements DomainObject, Entity<String> {
     public Planet() {
     }
 
+    public Planet(String name, String climate, String terrain) {
+        this(null, name, climate, terrain, 0);
+    }
+
     public Planet(String id, String name, String climate, String terrain, int movies) {
         this.id = id;
         this.name = name;

@@ -4,6 +4,7 @@ import com.b2w.starwars.application.services.PlanetService;
 import com.b2w.starwars.domain.models.Planet;
 import com.b2w.starwars.presentation.mappers.PlanetDtoMapper;
 import com.b2w.starwars.presentation.models.PlanetDto;
+import com.b2w.starwars.presentation.models.PlanetDtoCreate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -59,9 +60,9 @@ public class PlanetController {
     }
 
     @PostMapping
-    public ResponseEntity<PlanetDto> save(@RequestBody PlanetDto planetDto) {
+    public ResponseEntity<PlanetDto> save(@RequestBody PlanetDtoCreate planetDtoCreate) {
         try {
-            PlanetDto planetDtoResult = planetDtoMapper.map(planetService.save(planetDtoMapper.map(planetDto)));
+            PlanetDto planetDtoResult = planetDtoMapper.map(planetService.save(planetDtoMapper.map(planetDtoCreate)));
             URI planetUrl = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/id/{id}")

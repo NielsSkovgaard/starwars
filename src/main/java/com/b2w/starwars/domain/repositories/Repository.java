@@ -4,7 +4,7 @@ import com.b2w.starwars.core.Entity;
 
 import java.util.List;
 
-public interface Repository<TId, TEntity extends Entity<TId>> {
+public interface Repository<TEntity extends Entity<TId>, TId> {
     List<TEntity> getAll();
 
     TEntity getById(TId id);

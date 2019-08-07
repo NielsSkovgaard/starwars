@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public abstract class MongoDbRepository<TDomainId, TDomainEntity extends DomainObject & Entity<TDomainId>, TInfrastructureId, TInfrastructureEntity extends InfrastructureObject & Entity<TInfrastructureId>> implements Repository<TDomainId, TDomainEntity> {
+public abstract class MongoDbRepository<TDomainEntity extends DomainObject & Entity<TDomainId>, TDomainId, TInfrastructureEntity extends InfrastructureObject & Entity<TInfrastructureId>, TInfrastructureId> implements Repository<TDomainEntity, TDomainId> {
     private static final String MongoDbIdFieldName = "_id";
 
     private final MongoTemplate mongoTemplate;

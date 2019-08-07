@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PlanetMongoDbRepository extends MongoDbRepository<String, Planet, ObjectId, PlanetMongoDb> implements PlanetRepository {
+public class PlanetMongoDbRepository extends MongoDbRepository<Planet, String, PlanetMongoDb, ObjectId> implements PlanetRepository {
     public PlanetMongoDbRepository(MongoTemplate mongoTemplate, PlanetMongoDbMapper planetMongoDbMapper, Configuration configuration) {
         super(mongoTemplate, planetMongoDbMapper, configuration.getMongoDbCollectionName());
     }

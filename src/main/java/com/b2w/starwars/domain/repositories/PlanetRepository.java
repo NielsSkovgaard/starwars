@@ -4,7 +4,7 @@ import com.b2w.starwars.domain.models.Planet;
 
 import java.util.List;
 
-public interface PlanetRepository extends Repository<String, Planet> {
+public interface PlanetRepository extends Repository<Planet, String> {
     @Override
     List<Planet> getAll();
 
